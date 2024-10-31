@@ -1,59 +1,65 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Controller</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap"
+      rel="stylesheet"
+    />
     <link href="./styles.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <h1>Main Title</h1>
+      <h1>يلا نرنم</h1>
+      <div id="exportContainer">
+        <input
+          type="file"
+          style="display: none"
+          id="uploadFile"
+          accept=".json"
+        />
+        <button onclick="importList()">إستيراد قائمة</button>
+        <button onclick="exportList()">تصدير القائمة</button>
+      </div>
     </header>
     <main>
-        <section class="search-display">
-            <input type="search" id="song-search-input" placeholder="Song Search" />
-            <ul id="search-results">
-                <li>Result 1</li>
-                <li>Result 2</li>
-                <li>Result 3</li>
-                <li>Result 4</li>
-            </ul>
-        </section>
-        <section class="playlist-display">
-            <ul id="playlist">
-                <li>Song 1</li>
-                <li>Song 2</li>
-                <li>Song 3</li>
-                <li>Song 4</li>
-                <li>Song 5</li>
-            </ul>
-        </section>
-        <section class="verses-display">
-            <ul id="verses-list">
-                <li>Verse 1<br />Verse 1 Line 2</li>
-                <li>Verse 2<br />Verse 2 Line 2</li>
-                <li>Verse 3<br />Verse 3 Line 2</li>
-                <li>Verse 4<br />Verse 4 Line 2</li>
-                <li>Verse 5<br />Verse 5 Line 2</li>
-
-            </ul>
-        </section>
-
+      <section class="search-display">
+        <input
+          type="search"
+          id="song-search-input"
+          placeholder="بحث في قائمة الترانيم"
+        />
+        <ul id="search-results"></ul>
+      </section>
+      <section class="playlist-display">
+        <ul id="playlist"></ul>
+      </section>
+      <section class="verses-display">
+        <ul id="verses-list"></ul>
+      </section>
     </main>
     <footer>
-        <div>
-            <a href="stage.html" target="_blank">Display Stage Screen</a> |
-            <a href="congregation.html" target="_blank" >Display Congregation Screen</a> |
-            <a href="lowerthird.html"  target="_blank" >Display Lowerthird Screen</a>
-        </div>
-        Copyrights &copy; Reserved 2024
+      <div>
+        <a class="connect-screens" href="stage.html" target="_blank"
+          >Display Stage Screen</a
+        >
+        |
+        <a class="connect-screens" href="congregation.html" target="_blank"
+          >Display Congregation Screen</a
+        >
+        |
+        <a class="connect-screens" href="lowerthird.html" target="_blank"
+          >Display Lowerthird Screen</a
+        >
+      </div>
+      Copyrights &copy; Reserved 2024
     </footer>
 
     <script src="./script.js"></script>
-</body>
+  </body>
 </html>
