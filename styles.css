@@ -12,6 +12,19 @@ body {
       font-weight: bolder;
       text-align: center;
     }
+
+    div#exportContainer {
+      position: absolute;
+      top: 50px;
+      left: 50px;
+
+      button {
+        padding: 5px 15px;
+        background-color: #666;
+        color: white;
+        font-weight: bold;
+      }
+    }
   }
 
   main {

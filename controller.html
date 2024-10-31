@@ -16,6 +16,16 @@
   <body>
     <header>
       <h1>يلا نرنم</h1>
+      <div id="exportContainer">
+        <input
+          type="file"
+          style="display: none"
+          id="uploadFile"
+          accept=".json"
+        />
+        <button onclick="importList()">إستيراد قائمة</button>
+        <button onclick="exportList()">تصدير القائمة</button>
+      </div>
     </header>
     <main>
       <section class="search-display">

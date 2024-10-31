@@ -132,6 +132,9 @@ const updatePlaylistDisplay = () => {
       playlist.splice(event.newIndex, 0, movedItem);
     },
   });
+
+  //   Save List to the localStorage for better user experience
+  localStorage.setItem("_playlist_taraneem", JSON.stringify(playlist));
 };
 
 const displayVersesOnControllerScreen = (song) => {
@@ -183,6 +186,51 @@ const removeFromList = (song) => {
   playlist = tempPlaylist;
   updatePlaylistDisplay();
 };
+
+// Check if the localstorage has data
+const localStorageData = localStorage.getItem("_playlist_taraneem");
+if (localStorageData) {
+  playlist = JSON.parse(localStorageData);
+  updatePlaylistDisplay();
+}
+
+const exportList = () => {
+  const dataStr =
+    "data:text/json;charset=utf-8," +
+    encodeURIComponent(JSON.stringify(playlist));
+  const downloadAnchorNode = document.createElement("a");
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "taraneem_playlist.json");
+  document.body.appendChild(downloadAnchorNode); // required for firefox
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+};
+
+const importList = () => {
+  const fileUpload = document.getElementById("uploadFile");
+  fileUpload.click();
+};
+
+document
+  .getElementById("uploadFile")
+  .addEventListener("change", function (event) {
+    const file = event.target.files[0];
+
+    if (file) {
+      if (file.type !== "application/json") {
+        alert("Invalid file type");
+        return false;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        playlist = JSON.parse(e.target.result);
+        updatePlaylistDisplay();
+      };
+
+      reader.readAsText(file);
+    }
+  });
 
 // Event listener for the search button
 document
