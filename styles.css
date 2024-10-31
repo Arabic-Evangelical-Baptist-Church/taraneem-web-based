@@ -1,157 +1,177 @@
 body {
+  background-color: black;
+  padding: 20px;
+  margin: 0;
+  color: white;
+  font-family: "Cairo", sans-serif;
+  font-optical-sizing: auto;
+
+  header {
+    h1 {
+      color: white;
+      font-weight: bolder;
+      text-align: center;
+    }
+  }
+
+  main {
+    display: flex;
+    width: 100%;
+
+    section {
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        margin-right: 10px;
+        border: 1px solid green;
+        height: 450px;
+        overflow-y: auto;
+
+        li {
+          padding: 10px;
+          background-image: linear-gradient(#333, #666);
+          font-weight: bold;
+          border: 1px solid white;
+          cursor: pointer;
+
+          &.chorus-li {
+            background-image: linear-gradient(green, green);
+          }
+        }
+      }
+
+      &.search-display {
+        width: 30%;
+
+        input#song-search-input {
+          width: 100%;
+          display: block;
+          padding: 10px;
+        }
+
+        ul {
+          margin-right: 0;
+          height: 410px;
+
+          li {
+            button.add-to-playlist {
+              float: left;
+              color: white;
+              background: green;
+              padding: 3px 5px;
+              border-radius: 4px;
+              outline: none;
+              box-shadow: none;
+            }
+          }
+        }
+      }
+
+      &.playlist-display {
+        width: 30%;
+
+        ul {
+          li {
+            .remove-from-playlist {
+              float: left;
+              color: white;
+              background: orange;
+              padding: 3px 5px;
+              border-radius: 4px;
+              outline: none;
+              box-shadow: none;
+            }
+          }
+        }
+      }
+
+      &.verses-display {
+        width: 40%;
+
+        ul#verses-list {
+          li {
+            padding-right: 20px;
+
+            &.selected {
+              position: relative;
+              &::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 10px;
+                height: 100%;
+                background-color: orange;
+                opacity: 1;
+                z-index: 1;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  footer {
+    position: fixed;
+    width: 100%;
+    bottom: 0px;
     background-color: black;
-    padding: 20px;
-    margin: 0;
-    color: white;
-    font-family: "Cairo", sans-serif;
-    font-optical-sizing: auto;
+    text-align: center;
 
-    header{
-        h1{
-            color: white;
-            font-weight: bolder;
-            text-align: center;
-        }
+    a {
+      &.connect-screens {
+        color: white;
+      }
+    }
+  }
+
+  &#stageScreen {
+    text-align: center;
+    #currentVerse {
+      font-size: 7.5rem;
+      font-weight: bolder;
     }
 
-    main{
-        display: flex;
-        width: 100%;
-
-        section {
-
-            ul{
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                margin-right: 10px;
-                border: 1px solid green;
-                height: 450px;
-                overflow-y: auto;
-
-                li{
-                    padding:10px;
-                    background-image: linear-gradient(#333, #666);
-                    font-weight: bold;
-                    border: 1px solid white;
-                    cursor: pointer;
-
-                    &.chorus-li{
-                        background-image: linear-gradient(green, green);
-                    }
-                }
-            }
-
-            &.search-display{
-                width: 30%;
-
-                input#song-search-input{
-                    width: 100%;
-                    display: block;
-                    padding: 10px;
-                }
-
-                ul{
-                    margin-right: 0;
-                    height: 410px;
-
-                    li {
-                        button.add-to-playlist {
-                            float: left;
-                            color: white;
-                            background: green;
-                            padding: 3px 5px;
-                            border-radius: 4px;
-                            outline: none;
-                            box-shadow: none;
-                        }
-                    }
-                }
-            }
-
-            &.playlist-display{
-                width:30%;
-            }
-
-            &.verses-display{
-                width:40%;
-
-                ul#verses-list{
-                    li{
-                        padding-right: 20px;
-
-                        &.selected{
-                            position: relative;
-                            &::after{
-                                content: "";
-                                position: absolute;
-                                top: 0;
-                                right: 0;
-                                width: 10px;
-                                height: 100%;
-                                background-color: orange;
-                                opacity: 1;
-                                z-index: 1;
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    #nextVerse {
+      font-size: 5.5em;
+      font-weight: bold;
+      color: orange;
     }
+  }
 
-    footer {
-        position: fixed;
-        width: 100%;
-        bottom: 0px;
-        background-color: black;
-        text-align: center;
+  &#congregationScreen {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 96vh;
+
+    #currentVerse {
+      font-size: 7.5rem;
+      font-weight: bolder;
     }
+  }
 
+  &#lowerthirdScreen {
+    background-color: green;
+    display: flex;
+    height: 90vh;
+    align-items: end;
+    justify-content: center;
 
-    &#stageScreen{
-        text-align: center;
-        #currentVerse{
-            font-size: 7.5rem;
-            font-weight: bolder;
-        }
+    #currentVerse {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bolder;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: inline-block;
+      padding: 5px 15px;
 
-        #nextVerse{
-            font-size: 5.5em;
-            font-weight: bold;
-            color: orange;
-        }
+      &:empty {
+        padding: 0;
+      }
     }
-
-
-    &#congregationScreen{
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 96vh;
-
-        #currentVerse{
-            font-size: 7.5rem;
-            font-weight: bolder;
-        }
-    }
-
-    &#lowerthirdScreen{
-        background-color: green;
-        display: flex;
-        height: 90vh;
-        align-items: end;
-        justify-content: center;
-
-        #currentVerse{
-            text-align: center;
-            font-size: 2rem;
-            font-weight: bolder;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: inline-block;
-            padding: 5px 15px;
-        }
-    }
+  }
 }

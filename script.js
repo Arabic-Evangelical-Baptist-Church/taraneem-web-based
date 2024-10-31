@@ -1,171 +1,193 @@
-let songsList = []
+let songsList = [];
 let playlist = [];
-const broadcastChannel = new BroadcastChannel('verse_channel');
+const broadcastChannel = new BroadcastChannel("verse_channel");
 
-const loadJson = async() => {
-     try {
-        const response = await fetch('taraneemDB.json');
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        const data = await response.json();
-        songsList = data;
-    } catch (error) {
-        console.error('Error fetching JSON:', error);
+const loadJson = async () => {
+  try {
+    const response = await fetch("taraneemDB.json");
+    if (!response.ok) {
+      throw new Error("Network response was not ok " + response.statusText);
     }
-}
+    const data = await response.json();
+    songsList = data;
 
+    // Add the list on the inital load
+    searchSongs();
+  } catch (error) {
+    console.error("Error fetching JSON:", error);
+  }
+};
 
 loadJson();
 
-
 const searchSongs = () => {
-    const query = document.getElementById('song-search-input').value.toLowerCase();
-    const results = songsList.filter(song => {
-        // Check if the title matches the query
-        const titleMatch = song.title.toLowerCase().includes(query);
+  const query = document
+    .getElementById("song-search-input")
+    .value.toLowerCase();
+  const results = songsList.filter((song) => {
+    // Check if the title matches the query
+    const titleMatch = song.title.toLowerCase().includes(query);
 
-        // Check if any verse matches the query
-        const versesMatch = song.verses && song.verses.some(verseArray =>
-            verseArray.some(verse => verse.toLowerCase().includes(query))
-        );
+    // Check if any verse matches the query
+    const versesMatch =
+      song.verses &&
+      song.verses.some((verseArray) =>
+        verseArray.some((verse) => verse.toLowerCase().includes(query))
+      );
 
-        return titleMatch || versesMatch; // Return true if either matches
-    });
-    displayResults(results);
-}
+    return titleMatch || versesMatch; // Return true if either matches
+  });
+  displayResults(results);
+};
 
 const displayResults = (results) => {
-    const resultsList = document.getElementById('search-results');
-    resultsList.innerHTML = ''; // Clear previous results
+  const resultsList = document.getElementById("search-results");
+  resultsList.innerHTML = ""; // Clear previous results
 
-    if (results.length > 0) {
-        results.forEach(song => {
-            const li = document.createElement('li');
-            li.textContent = song.title;
-            li.classList.add('single-search-result')
+  if (results.length > 0) {
+    results.forEach((song) => {
+      const li = document.createElement("li");
+      li.textContent = song.title;
+      li.classList.add("single-search-result");
 
-            const btn = document.createElement('button')
-            btn.classList.add('add-to-playlist')
-            btn.textContent = 'Add to Playlist'
+      const btn = document.createElement("button");
+      btn.classList.add("add-to-playlist");
+      btn.textContent = "أضف الي القائمة";
 
-            btn.addEventListener('click', (event) => {
-                event.stopPropagation()
-                addToPlaylist(song)
-            });
+      btn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        addToPlaylist(song);
+      });
 
-            li.appendChild(btn)
-            resultsList.appendChild(li);
-        });
-    } else {
-        resultsList.innerHTML = '<li>No results found</li>';
-    }
-}
+      li.appendChild(btn);
+      resultsList.appendChild(li);
+    });
+  } else {
+    resultsList.innerHTML = "<li>No results found</li>";
+  }
+};
 
-const formatSong = song => {
+const formatSong = (song) => {
+  const verses = [];
 
-    const verses = []
+  if (song.verses) {
+    song.verses.forEach((verseArray) => {
+      verseArray.forEach((verse) => verses.push({ verse, type: "verse" }));
 
-    if(song.verses){
-        song.verses.forEach(verseArray => {
-            verseArray.forEach(verse => verses.push({verse, type: 'verse'}))
+      if (song.chorus) {
+        song.chorus.forEach((verse) => verses.push({ verse, type: "chorus" }));
+      }
+    });
+  }
 
-            if(song.chorus){
-                song.chorus.forEach(verse => verses.push({verse, type: 'chorus'}))
-            }
-        });
-    }
-
-    return {
-        title: song.title,
-        verses
-    }
-}
-
+  return {
+    id: playlist.length,
+    title: song.title,
+    verses,
+  };
+};
 
 // Function to add a song to the playlist
 const addToPlaylist = (song) => {
+  const formattedSong = formatSong(song);
 
-    const formattedSong = formatSong(song)
-
-    if (!playlist.includes(formattedSong)) {
-        playlist.push(formattedSong);
-        updatePlaylistDisplay();
-    }
+  if (!playlist.includes(formattedSong)) {
+    playlist.push(formattedSong);
+    updatePlaylistDisplay();
+  }
 };
 
 // Function to update the playlist display
 const updatePlaylistDisplay = () => {
-    const playlistList = document.getElementById('playlist');
-    playlistList.innerHTML = ''; // Clear previous playlist
+  const playlistList = document.getElementById("playlist");
+  playlistList.innerHTML = ""; // Clear previous playlist
 
-    playlist.forEach((song, index) => {
-        const li = document.createElement('li');
-        li.textContent = song.title;
-        li.dataset.index = index; // Store the index for sorting
+  playlist.forEach((song, index) => {
+    const li = document.createElement("li");
+    li.textContent = song.title;
+    li.dataset.index = index; // Store the index for sorting
 
-        // Add click event to display verses when the playlist item is clicked
-        li.addEventListener('click', () => displayVersesOnControllerScreen(song));
+    const btn = document.createElement("button");
+    btn.classList.add("remove-from-playlist");
+    btn.textContent = "أحذف من القائمة";
 
-        playlistList.appendChild(li);
-
+    btn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      removeFromList(song);
     });
 
-     // Make the playlist sortable
-    new Sortable(playlistList, {
-        onEnd: (event) => {
-            // Update the playlist array based on the new order
-            const movedItem = playlist.splice(event.oldIndex, 1)[0];
-            playlist.splice(event.newIndex, 0, movedItem);
-        }
-    });
+    li.appendChild(btn);
+
+    // Add click event to display verses when the playlist item is clicked
+    li.addEventListener("click", () => displayVersesOnControllerScreen(song));
+
+    playlistList.appendChild(li);
+  });
+
+  // Make the playlist sortable
+  new Sortable(playlistList, {
+    onEnd: (event) => {
+      // Update the playlist array based on the new order
+      const movedItem = playlist.splice(event.oldIndex, 1)[0];
+      playlist.splice(event.newIndex, 0, movedItem);
+    },
+  });
 };
 
 const displayVersesOnControllerScreen = (song) => {
-    const versesList = document.getElementById('verses-list');
-    versesList.innerHTML = ''; // Clear previous verses
+  const versesList = document.getElementById("verses-list");
+  versesList.innerHTML = ""; // Clear previous verses
 
-    if (song.verses) {
-        song.verses.forEach((verseObj, index) => {
-            const li = document.createElement('li');
-            li.innerHTML = verseObj.verse.replace(/\n/g, '<br>');
+  if (song.verses) {
+    song.verses.forEach((verseObj, index) => {
+      const li = document.createElement("li");
+      li.innerHTML = verseObj.verse.replace(/\n/g, "<br>");
 
-            if(verseObj.type === 'chorus'){
-                li.classList.add('chorus-li')
-            }
+      if (verseObj.type === "chorus") {
+        li.classList.add("chorus-li");
+      }
 
-            // Add click event to send broadcast message
-            li.addEventListener('click', () => {
-                sendBroadcastMessage(song, index)
+      // Add click event to send broadcast message
+      li.addEventListener("click", () => {
+        sendBroadcastMessage(song, index);
 
-                // Remove 'selected' class from all verses in one go
-                const versesList = document.querySelector('ul#verses-list');
-                versesList.querySelectorAll('li.selected').forEach((selectedLi) => {
-                    selectedLi.classList.remove('selected');
-                });
+        // Remove 'selected' class from all verses in one go
+        const versesList = document.querySelector("ul#verses-list");
+        versesList.querySelectorAll("li.selected").forEach((selectedLi) => {
+          selectedLi.classList.remove("selected");
+        });
 
-                // Add 'selected' class to the clicked verse
-                li.classList.add('selected');
-            });
+        // Add 'selected' class to the clicked verse
+        li.classList.add("selected");
+      });
 
-            versesList.appendChild(li);
-        })
-    }
+      versesList.appendChild(li);
+    });
+  }
 };
 
 const sendBroadcastMessage = (song, index) => {
-    const currentVerse = song.verses[index].verse
-    const nextVerse = song.verses[index + 1] ? song.verses[index + 1].verse : ''
+  const currentVerse = song.verses[index].verse;
+  const nextVerse = song.verses[index + 1] ? song.verses[index + 1].verse : "";
 
-    const message = {
-        currentVerse,
-        nextVerse
-    };
+  const message = {
+    currentVerse,
+    nextVerse,
+  };
 
-    broadcastChannel.postMessage(message); // Send the message
+  broadcastChannel.postMessage(message); // Send the message
 };
 
+const removeFromList = (song) => {
+  let tempPlaylist = playlist.filter((single) => single.id !== song.id);
+  playlist = tempPlaylist;
+  updatePlaylistDisplay();
+};
 
 // Event listener for the search button
-document.getElementById('song-search-input').addEventListener('keyup', searchSongs);
-document.getElementById('song-search-input').addEventListener('keyup', searchSongs);
+document
+  .getElementById("song-search-input")
+  .addEventListener("keyup", searchSongs);
+document
+  .getElementById("song-search-input")
+  .addEventListener("keyup", searchSongs);
